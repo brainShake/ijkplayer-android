@@ -1,0 +1,66 @@
+/*
+ * Copy IJK .so from ABI library modules into the example app jniLibs.
+ * Fixes Android Studio Run deploying ~2MB Java-only APKs (no AAR jni merge).
+ */
+
+def all64AbiModules = [
+        ['armeabi', 'ijkplayer-armv5'],
+        ['armeabi-v7a', 'ijkplayer-armv7a'],
+        ['arm64-v8a', 'ijkplayer-arm64'],
+        ['x86', 'ijkplayer-x86'],
+        ['x86_64', 'ijkplayer-x86_64'],
+]
+
+def all32AbiModules = [
+        ['armeabi', 'ijkplayer-armv5'],
+        ['armeabi-v7a', 'ijkplayer-armv7a'],
+        ['x86', 'ijkplayer-x86'],
+]
+
+def resolveJniSourceDir = { Project libProject, String buildType, String abi ->
+    def candidates = [
+            libProject.file("build/intermediates/library_jni/${buildType}/jni/${abi}"),
+            libProject.file("build/intermediates/merged_jni_libs/${buildType}/out/${abi}"),
+            libProject.file("src/main/libs/${abi}"),
+            libProject.file("build/packaged-jni-ffmpeg/${abi}"),
+    ]
+    return candidates.find { it.exists() && it.listFiles()?.any { it.name.endsWith('.so') } }
+}
+
+def registerSyncTask = { variant ->
+    def flavor = variant.flavorName
+    def modules = (flavor == 'all64') ? all64AbiModules : all32AbiModules
+    def destRoot = file("${buildDir}/synced-jni/${flavor}")
+
+    def syncTask = tasks.register("sync${variant.name.capitalize()}ExampleJniLibs") {
+        modules.each { abi, moduleName ->
+            dependsOn(":${moduleName}:merge${variant.buildType.name.capitalize()}JniLibFolders")
+        }
+        doLast {
+            destRoot.deleteDir()
+            modules.each { abi, moduleName ->
+                def libProject = project(":${moduleName}")
+                def src = resolveJniSourceDir(libProject, variant.buildType.name, abi)
+                if (src == null) {
+                    throw new GradleException(
+                            "No .so under ${moduleName} for ${abi} (${variant.name}). " +
+                            "Build native modules first: gradlew :${moduleName}:assemble${variant.buildType.name.capitalize()}")
+                }
+                copy {
+                    from src
+                    into new File(destRoot, abi)
+                    include '*.so'
+                }
+            }
+            logger.lifecycle("Synced IJK jni libs for ${variant.name} -> ${destRoot}")
+        }
+    }
+
+    variant.preBuildProvider.configure { dependsOn(syncTask) }
+}
+
+afterEvaluate {
+    android.applicationVariants.configureEach { variant ->
+        registerSyncTask(variant)
+    }
+}

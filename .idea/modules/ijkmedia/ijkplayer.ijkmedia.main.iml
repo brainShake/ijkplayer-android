@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../contrib/build/ffmpeg-arm64/output/include">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../contrib/build/ffmpeg-arm64/output/include" type="native-header-root" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../ijkmedia">
+      <sourceFolder url="file://$MODULE_DIR$/../../../ijkmedia" type="native-Source-root" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../ijkmedia/.cxx" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../ijkmedia/.externalNativeBuild" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../ndk-common/cmake">
+      <sourceFolder url="file://$MODULE_DIR$/../../../ndk-common/cmake" type="native-Source-root" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../../../../ijkprof/android-ndk-profiler-dummy/jni">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../ijkprof/android-ndk-profiler-dummy/jni" type="native-Source-root" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

@@ -1,0 +1,10 @@
+/*
+ * Warn when Studio might install a broken APK. Use Run Configuration "installAll64Debug".
+ */
+tasks.whenTaskAdded { task ->
+    if (task.name == 'installAll64Debug' || task.name == 'installAll64Release') {
+        task.doFirst {
+            logger.lifecycle("Installing ${task.name} with embedded native libs (APK should be ~30MB)")
+        }
+    }
+}

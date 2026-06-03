@@ -1,0 +1,17 @@
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-x86/src/main/obj/local/x86/objs/yuv_static/source/row_any.o: \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-x86/src/main/jni/ijkmedia/ijkyuv/source/row_any.cc \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-x86/src/main/jni/ijkmedia/ijkyuv/include/libyuv/row.h \
+  /home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/stdlib.h \
+  /home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/__config \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-x86/src/main/jni/ijkmedia/ijkyuv/include/libyuv/basic_types.h \
+  /home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/stddef.h
+
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-x86/src/main/jni/ijkmedia/ijkyuv/include/libyuv/row.h:
+
+/home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/stdlib.h:
+
+/home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/__config:
+
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-x86/src/main/jni/ijkmedia/ijkyuv/include/libyuv/basic_types.h:
+
+/home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/stddef.h:

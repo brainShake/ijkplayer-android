@@ -1,0 +1,97 @@
+apply plugin: 'com.android.library'
+
+apply from: new File(rootProject.projectDir, "tools/ijk-jni-sources.gradle")
+
+def ijkmediaDir = ext.ijkmediaDir
+def ffmpegOut = file("${rootProject.projectDir}/prebuilt/ffmpeg/${project.ext.ffmpegArch}")
+def profilerDir = file("${rootProject.projectDir}/prebuilt/ijkprof/jni")
+def abiFilter = project.ext.abiFilter
+def moduleLibsFfmpeg = file("src/main/libs/${abiFilter}/libijkffmpeg.so")
+def prebuiltFfmpegSo = file("${ffmpegOut}/libijkffmpeg.so")
+def packagedFfmpegRoot = file("${buildDir}/packaged-jni-ffmpeg")
+
+if (!file("${profilerDir}/prof.c").exists()) {
+    throw new GradleException(
+            "Missing ${profilerDir}. Copy ijkprof/jni into prebuilt/ or run tools/sync-ffmpeg-prebuilt.ps1.")
+}
+
+// CMake links libijkffmpeg as IMPORTED; AGP does not ship it unless it is under jniLibs.
+// Ship only ffmpeg here — ijkplayer/ijksdl come from externalNativeBuild (avoid duplicate .so merge).
+tasks.register("packageLibijkffmpeg", Copy) {
+    def src = moduleLibsFfmpeg.exists() ? moduleLibsFfmpeg : prebuiltFfmpegSo
+    onlyIf { src.exists() }
+    doFirst {
+        if (!src.exists()) {
+            throw new GradleException(
+                    "libijkffmpeg.so missing for ${project.ext.ffmpegArch}. " +
+                    "Expected ${prebuiltFfmpegSo} or ${moduleLibsFfmpeg}. " +
+                    "Run: .\\tools\\sync-ffmpeg-prebuilt.ps1")
+        }
+    }
+    from src
+    into file("${packagedFfmpegRoot}/${abiFilter}")
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    ndkVersion rootProject.ext.ndkVersion
+
+    defaultConfig {
+        def moduleMinSdk = (project.name.contains('arm64') || project.name.contains('x86_64')) ? 21 : 14
+        minSdkVersion moduleMinSdk
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        externalNativeBuild {
+            cmake {
+                cFlags "-O3", "-Wall", "-pipe", "-ffast-math", "-DANDROID", "-DNDEBUG"
+                cppFlags "-O3", "-Wall", "-pipe", "-ffast-math", "-DANDROID", "-DNDEBUG"
+                arguments "-DANDROID_STL=c++_static",
+                        "-DIJKMEDIA_DIR=${ijkmediaDir.absolutePath.replace('\\', '/')}",
+                        "-DFFMPEG_DIR=${ffmpegOut.absolutePath.replace('\\', '/')}",
+                        "-DIJK_PROFILER_DIR=${profilerDir.absolutePath.replace('\\', '/')}"
+            }
+        }
+        ndk {
+            abiFilters project.ext.abiFilter
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.22.1"
+        }
+    }
+
+    packagingOptions {
+        jniLibs {
+            pickFirsts += ['libijkplayer.so', 'libijksdl.so', 'libijkffmpeg.so']
+        }
+    }
+
+    sourceSets.main {
+        jniLibs.srcDir packagedFfmpegRoot
+    }
+}
+
+tasks.named("preBuild").configure { dependsOn("packageLibijkffmpeg") }
+
+tasks.configureEach { task ->
+    if (task.name.contains("merge") && task.name.contains("JniLib")) {
+        task.dependsOn("packageLibijkffmpeg")
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+apply from: new File(rootProject.projectDir, "tools/gradle-on-demand.gradle")

@@ -1,0 +1,2 @@
+// Deprecated: ndk-build removed. Use tools/native-cmake.gradle (ijkmedia/cmake).
+throw new GradleException("ndk-native.gradle is removed. Apply tools/native-cmake.gradle instead.")

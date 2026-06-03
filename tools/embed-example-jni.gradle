@@ -1,0 +1,47 @@
+/*
+ * Embed IJK .so into the example APK from CMake/build outputs (via sync-example-jni).
+ * Do NOT use stale src/main/libs alone — libijkplayer/libijksdl must match prebuilt/ffmpeg.
+ */
+
+afterEvaluate {
+    android.applicationVariants.configureEach { variant ->
+        def syncedDir = file("${buildDir}/synced-jni/${variant.flavorName}")
+        def syncTaskName = "sync${variant.name.capitalize()}ExampleJniLibs"
+
+        android.sourceSets.named(variant.flavorName) { sourceSet ->
+            sourceSet.jniLibs.srcDirs = [syncedDir]
+        }
+        logger.lifecycle("embed-example-jni: ${variant.name} jniLibs <- ${syncedDir} (after ${syncTaskName})")
+
+        variant.preBuildProvider.configure { dependsOn(syncTaskName) }
+    }
+
+    android.applicationVariants.configureEach { variant ->
+        variant.packageApplicationProvider.configure { packageTask ->
+            packageTask.doLast {
+                def apkDir = new File(project.buildDir, "outputs/apk/${variant.flavorName}/${variant.buildType.name}")
+                File apk = apkDir.listFiles()?.find { it.name.endsWith('.apk') }
+                if (apk == null || !apk.exists()) {
+                    return
+                }
+                def zip = new java.util.zip.ZipFile(apk)
+                def soCount = 0
+                try {
+                    zip.entries().each { e ->
+                        if (e.name.startsWith('lib/') && e.name.endsWith('/libijkffmpeg.so')) {
+                            soCount++
+                        }
+                    }
+                } finally {
+                    zip.close()
+                }
+                if (soCount == 0 || apk.length() < 10 * 1024 * 1024) {
+                    throw new GradleException(
+                            "APK ${apk.name} is ${apk.length()} bytes without native libs. " +
+                            "Use all64Debug + gradlew :ijkplayer-example:installAll64Debug " +
+                            "(do not use Apply Changes). See install-all64-debug.bat")
+                }
+            }
+        }
+    }
+}

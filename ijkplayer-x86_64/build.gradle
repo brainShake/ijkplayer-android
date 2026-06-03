@@ -1,0 +1,9 @@
+// x86_64: libijkffmpeg shared link still uses legacy prebuilt (PIC issue with gcc 4.9).
+// ijkplayer/ijksdl built via CMake when IJK_X86_64_CMAKE=true in gradle.properties.
+if (rootProject.findProperty('IJK_X86_64_CMAKE') == 'true') {
+    project.ext.ffmpegArch = 'x86_64'
+    project.ext.abiFilter = 'x86_64'
+    apply from: new File(rootProject.projectDir, "tools/native-cmake.gradle")
+} else {
+    apply from: new File(rootProject.projectDir, "tools/native-library.gradle")
+}

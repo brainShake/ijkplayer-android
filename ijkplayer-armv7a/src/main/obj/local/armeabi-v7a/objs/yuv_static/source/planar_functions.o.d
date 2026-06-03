@@ -1,0 +1,38 @@
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/obj/local/armeabi-v7a/objs/yuv_static/source/planar_functions.o: \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/source/planar_functions.cc \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/planar_functions.h \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/basic_types.h \
+  /home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/stddef.h \
+  /home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/__config \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/convert.h \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/convert_from.h \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/rotate.h \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/convert_argb.h \
+  /home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/string.h \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/cpu_id.h \
+  /mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/row.h \
+  /home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/stdlib.h
+
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/planar_functions.h:
+
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/basic_types.h:
+
+/home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/stddef.h:
+
+/home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/__config:
+
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/convert.h:
+
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/convert_from.h:
+
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/rotate.h:
+
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/convert_argb.h:
+
+/home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/string.h:
+
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/cpu_id.h:
+
+/mnt/e/AnroidProject/ijkplayer/ijkplayer-master/android/ijkplayer/ijkplayer-armv7a/src/main/jni/ijkmedia/ijkyuv/include/libyuv/row.h:
+
+/home/administrator/android-ndk-r16b/sources/cxx-stl/llvm-libc++/include/stdlib.h:

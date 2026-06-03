@@ -1,0 +1,53 @@
+/*
+ * Link ijkplayer-java to CMake for IDE indexing (uses :ijkmedia sources).
+ */
+evaluationDependsOn(':ijkmedia')
+
+def ijkGradleRoot = rootProject.projectDir
+def ijkmediaDir = project(':ijkmedia').projectDir
+def devAbi = rootProject.findProperty('ijk.devAbi') ?: 'arm64-v8a'
+def ffmpegArch = [
+        'armeabi'     : 'armv5',
+        'armeabi-v7a' : 'armv7a',
+        'arm64-v8a'   : 'arm64',
+        'x86'         : 'x86',
+        'x86_64'      : 'x86_64',
+].get(devAbi, 'arm64')
+def ffmpegOut = file("${ijkGradleRoot}/prebuilt/ffmpeg/${ffmpegArch}")
+def profilerDir = file("${ijkGradleRoot}/prebuilt/ijkprof/jni")
+
+android {
+    ndkVersion rootProject.ext.ndkVersion
+
+    defaultConfig {
+        ndk {
+            abiFilters devAbi
+        }
+        externalNativeBuild {
+            cmake {
+                cFlags "-O0", "-g", "-DANDROID"
+                cppFlags "-O0", "-g", "-DANDROID"
+                arguments "-DANDROID_STL=c++_static",
+                        "-DIJKMEDIA_DIR=${ijkmediaDir.absolutePath.replace('\\', '/')}",
+                        "-DFFMPEG_DIR=${ffmpegOut.absolutePath.replace('\\', '/')}",
+                        "-DIJK_PROFILER_DIR=${profilerDir.absolutePath.replace('\\', '/')}",
+                        "-DIJK_JAVA_IDE_MODULE=ON"
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "${ijkGradleRoot}/ijkmedia/src/main/cpp/CMakeLists.txt"
+            version "3.22.1"
+        }
+    }
+
+    packagingOptions {
+        jniLibs {
+            excludes += ['**/libijkplayer.so', '**/libijksdl.so', '**/libijkffmpeg.so']
+        }
+    }
+}
+
+ext.ijkJniRegistrationFile = file("${ijkmediaDir}/ijkplayer/android/ijkplayer_jni.c")

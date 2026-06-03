@@ -1,0 +1,14 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+ijkplayer-native/
+third-party/
+/captures
+android-ndk-prof
+.cxx/
+**/packaged-jni-ffmpeg/
+# Legacy jni/ junction to repo ijkmedia (obsolete; use :ijkmedia module)
+**/src/main/jni/ijkmedia

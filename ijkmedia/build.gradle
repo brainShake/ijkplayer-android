@@ -1,0 +1,39 @@
+/*
+ * Gradle 模块 :ijkmedia
+ *
+ * 【角色】
+ *   - 承载工程内 JNI 源码树（ijkplayer/、ijksdl/、ijkj4a/ 等，位于本模块根目录）
+ *   - 按 gradle.properties 的 ijk.devAbi 编译单 ABI 的 libijkplayer.so / libijksdl.so，供 IDE 索引与快速验证
+ *   - 各 ABI 发布模块（ijkplayer-arm64 等）编译同一份源码，但会为每个 ABI 打完整包
+ *
+ * 【不包含】libijkffmpeg.so（预编译，由 native-cmake.gradle 从 prebuilt/ffmpeg 或 libs 拷贝进 jniLibs）
+ *
+ * 架构说明见本目录 ARCHITECTURE.md
+ */
+def devAbi = rootProject.findProperty('ijk.devAbi') ?: 'arm64-v8a'
+def devArch = [
+        'armeabi'     : 'armv5',
+        'armeabi-v7a' : 'armv7a',
+        'arm64-v8a'   : 'arm64',
+        'x86'         : 'x86',
+        'x86_64'      : 'x86_64',
+].get(devAbi, 'arm64')
+
+project.ext.ffmpegArch = devArch
+project.ext.abiFilter = devAbi
+apply from: new File(rootProject.projectDir, "tools/native-cmake.gradle")
+
+def devMinSdk = (devAbi == 'arm64-v8a' || devAbi == 'x86_64') ? 21 : 14
+
+android {
+    defaultConfig {
+        minSdkVersion devMinSdk
+    }
+    // 本模块仅用于编 native；不把 ffmpeg 等预编译 so 打进 AAR（由 packageLibijkffmpeg 任务处理开发态需求）
+    sourceSets.main {
+        jniLibs.srcDirs = []
+    }
+}
+
+dependencies {
+}

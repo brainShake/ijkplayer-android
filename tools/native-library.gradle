@@ -1,0 +1,29 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        def moduleMinSdk = (project.name == 'ijkplayer-arm64' || project.name == 'ijkplayer-x86_64') ? 21 : 14
+        minSdkVersion moduleMinSdk
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets.main {
+        jniLibs.srcDirs 'src/main/libs'
+        // JNI sources live in :ijkmedia; ABI modules only ship .so
+        jni.srcDirs = []
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+apply from: new File(rootProject.projectDir, "tools/gradle-on-demand.gradle")

@@ -1,0 +1,3 @@
+project.ext.ffmpegArch = 'x86'
+project.ext.abiFilter = 'x86'
+apply from: new File(rootProject.projectDir, "tools/native-cmake.gradle")

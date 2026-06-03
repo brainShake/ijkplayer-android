@@ -1,0 +1,40 @@
+/*
+ * Optional: verify final APK contains IJK native libs (enable with -Pijk.verifyApkNativeLibs=true).
+ * Runs on assemble* only — not on package* alone (avoids false positives from stale APK in outputs/).
+ */
+def verifyEnabled = project.findProperty('ijk.verifyApkNativeLibs') == 'true'
+
+if (!verifyEnabled) {
+    return
+}
+
+android.applicationVariants.configureEach { variant ->
+    def capitalized = variant.name.capitalize()
+    tasks.register("verify${capitalized}ApkNativeLibs") {
+        dependsOn variant.assembleProvider
+        doLast {
+            def apkDir = new File(project.buildDir, "outputs/apk/${variant.flavorName}/${variant.buildType.name}")
+            File apk = apkDir.listFiles()?.find { it.isFile() && it.name.endsWith('.apk') }
+            if (apk == null || !apk.exists()) {
+                throw new GradleException("verify: APK not found under ${apkDir}")
+            }
+            def found = false
+            def zip = new java.util.zip.ZipFile(apk)
+            try {
+                zip.entries().each { e ->
+                    if (e.name.startsWith('lib/') && e.name.endsWith('/libijkffmpeg.so')) {
+                        found = true
+                    }
+                }
+            } finally {
+                zip.close()
+            }
+            if (!found) {
+                throw new GradleException(
+                        "APK ${apk.name} (${apk.length()} bytes) has no lib/**/libijkffmpeg.so. " +
+                        "Run: gradlew clean :ijkplayer-example:assemble${capitalized}")
+            }
+        }
+    }
+    variant.assembleProvider.configure { it.finalizedBy("verify${capitalized}ApkNativeLibs") }
+}

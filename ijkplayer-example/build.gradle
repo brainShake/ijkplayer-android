@@ -1,0 +1,86 @@
+apply plugin: 'com.android.application'
+apply from: new File(rootProject.projectDir, "tools/verify-example-native-libs.gradle")
+apply from: new File(rootProject.projectDir, "tools/embed-example-jni.gradle")
+// Optional: refresh .so from module build outputs (src/main/libs is used for packaging)
+apply from: new File(rootProject.projectDir, "tools/sync-example-jni.gradle")
+apply from: new File(rootProject.projectDir, "tools/studio-install-guard.gradle")
+
+// Ensure packaging never runs before native libs are merged (fixes ~2MB Java-only APK from IDE incremental builds).
+afterEvaluate {
+    android.applicationVariants.configureEach { variant ->
+        def mergeTask = tasks.findByName("merge${variant.name.capitalize()}NativeLibs")
+        if (mergeTask != null) {
+            variant.packageApplicationProvider.configure { packageTask ->
+                packageTask.dependsOn(mergeTask)
+            }
+        }
+    }
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "tv.danmaku.ijk.media.example"
+        minSdkVersion 14
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ndk {
+                debugSymbolLevel 'NONE'
+            }
+        }
+        debug {
+            ndk {
+                debugSymbolLevel 'NONE'
+            }
+        }
+    }
+    flavorDimensions "abi"
+    productFlavors {
+        all32 {
+            dimension "abi"
+            minSdkVersion 14
+        }
+        all64 {
+            dimension "abi"
+            isDefault true
+            minSdkVersion 21
+        }
+    }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+            pickFirsts += ['libijkplayer.so', 'libijksdl.so', 'libijkffmpeg.so']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:preference-v7:28.0.0'
+    implementation 'com.android.support:support-annotations:28.0.0'
+
+    implementation 'com.squareup:otto:1.3.8'
+
+    implementation project(':ijkplayer-java')
+    implementation project(':ijkplayer-exo')
+
+    all32Implementation project(':ijkplayer-armv5')
+    all32Implementation project(':ijkplayer-armv7a')
+    all32Implementation project(':ijkplayer-x86')
+
+    all64Implementation project(':ijkplayer-armv5')
+    all64Implementation project(':ijkplayer-armv7a')
+    all64Implementation project(':ijkplayer-arm64')
+    all64Implementation project(':ijkplayer-x86')
+    all64Implementation project(':ijkplayer-x86_64')
+}

@@ -1,0 +1,5 @@
+if(NOT IJK_PROFILER_DIR)
+    set(IJK_PROFILER_DIR "${CMAKE_CURRENT_LIST_DIR}/../../prebuilt/ijkprof/jni")
+endif()
+add_library(android-ndk-profiler STATIC "${IJK_PROFILER_DIR}/prof.c")
+target_include_directories(android-ndk-profiler PUBLIC "${IJK_PROFILER_DIR}")

@@ -1,0 +1,21 @@
+/*
+ * JNI/C++ sources live in :ijkmedia (single source tree under ijkplayer-android/).
+ */
+def ijkmediaDir
+if (project.name == 'ijkmedia') {
+    ijkmediaDir = project.projectDir
+} else {
+    evaluationDependsOn(':ijkmedia')
+    ijkmediaDir = project(':ijkmedia').projectDir
+}
+
+if (!file("${ijkmediaDir}/ijkplayer/ijkplayer.c").exists()) {
+    throw new GradleException(
+            "Missing JNI sources in ${ijkmediaDir} (expected ijkplayer/ijkplayer.c).")
+}
+
+ext.ijkmediaDir = ijkmediaDir
+
+android.sourceSets.main {
+    jni.srcDirs = [ijkmediaDir.absolutePath]
+}

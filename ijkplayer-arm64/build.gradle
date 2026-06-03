@@ -1,0 +1,3 @@
+project.ext.ffmpegArch = 'arm64'
+project.ext.abiFilter = 'arm64-v8a'
+apply from: new File(rootProject.projectDir, "tools/native-cmake.gradle")
